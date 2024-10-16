@@ -40,18 +40,20 @@ const data = [
   // Seleção de elementos
   const imcTable = document.querySelector("#imc-table");
   
-  const heightInput = document.querySelector("#height");
-  const weightInput = document.querySelector("#weight");
+  var heightInput = document.querySelector("#height");
+  var weightInput = document.querySelector("#weight");
   const calcBtn = document.querySelector("#calc-btn");
-  const clearBtn = document.querySelector("#clear-btn");
+  const cleanInputs = document.querySelector("#clear-btn");
   
-  const calcContainer = document.querySelector("#calc-container");
-  const resultContainer = document.querySelector("#result-container");
+  var calcContainer = document.querySelector("#calc-container");
+  var resultContainer = document.querySelector("#result-container");
   
   const imcNumber = document.querySelector("#imc-number span");
-  const imcInfo = document.querySelector("#imc-info span");
+  var imcInfo = document.querySelector("#imc-info span");
   
   const backBtn = document.querySelector("#back-btn");
+
+  
   
   // Funções
   function createTable(data) {
@@ -112,14 +114,14 @@ const data = [
   calcBtn.addEventListener("click", (e) => {
     e.preventDefault();
   
-    const weight = +weightInput.value.replace(",", ".");
-    const height = +heightInput.value.replace(",", ".");
+    var weight = +weightInput.value.replace(",", ".");
+    var height = +heightInput.value.replace(",", ".");
   
     console.log(weight, height);
   
     if (!weight || !height) return;
   
-    const imc = calcImc(height, weight);
+    var imc = calcImc(height, weight);
     let info;
   
     data.forEach((item) => {
@@ -143,12 +145,12 @@ const data = [
         imcInfo.classList.add("good");
         break;
       case "Sobrepeso":
-        imcNumber.classList.add("low");
-        imcInfo.classList.add("low");
+        imcNumber.classList.add("high");
+        imcInfo.classList.add("high");
         break;
       case "Obesidade":
-        imcNumber.classList.add("medium");
-        imcInfo.classList.add("medium");
+        imcNumber.classList.add("high");
+        imcInfo.classList.add("high");
         break;
       case "Obesidade grave":
         imcNumber.classList.add("high");
