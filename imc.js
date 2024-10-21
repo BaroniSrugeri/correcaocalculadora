@@ -39,136 +39,113 @@ const data = [
 
 // Seleção de elementos
 const imcTable = document.getElementById("imc-table");
-
-var heightInput = document.getElementById("height");
-var weightInput = document.getElementById("weight");
+const heightInput = document.getElementById("height");
+const weightInput = document.getElementById("weight");
 const calcBtn = document.getElementById("calc-btn");
-const cleanInputs = document.getElementById("clear-btn");
-
-const calcContainer = document.getElementById("calc-container");
+const clearBtn = document.getElementById("clear-btn");
 const resultContainer = document.getElementById("result-container");
-
-const imcNumber = document.getElementById("imc-number");
-const imcInfo = document.getElementById("imc-info");
-
+const imcNumber = document.getElementById("imc-number").querySelector("span");
+const imcInfo = document.getElementById("imc-info").querySelector("span");
 const backBtn = document.getElementById("back-btn");
-
-
 
 // Funções
 function createTable(data) {
   data.forEach((item) => {
-    const div = document.createElement("div");
-    div.classList.add("table-data");
+      const div = document.createElement("div");
+      div.classList.add("table-data");
 
-    const classification = document.createElement("p");
-    classification.innerText = item.classification;
+      const classification = document.createElement("p");
+      classification.innerText = item.classification;
 
-    const info = document.createElement("p");
-    info.innerText = item.info;
+      const info = document.createElement("p");
+      info.innerText = item.info;
 
-    const obesity = document.createElement("p");
-    obesity.innerText = item.obesity;
+      const obesity = document.createElement("p");
+      obesity.innerText = item.obesity;
 
-    div.appendChild(classification);
-    div.appendChild(info);
-    div.appendChild(obesity);
+      div.appendChild(classification);
+      div.appendChild(info);
+      div.appendChild(obesity);
 
-    imcTable.appendChild(div);
+      imcTable.appendChild(div);
   });
 }
 
+//^função 1
+//^Div para a tabela
 function validDigits(text) {
   return text.replace(/[^0-9,]/g, "");
 }
 
+//^função 2
+
 function calcImc(height, weight) {
-  const imc = (weight / (height ** height));
-  window.alert(imc);
+  return weight / (height ** 2);
 }
+
+//^função 3
 
 function cleanInputs() {
-
   heightInput.value = "";
   weightInput.value = "";
-  imcNumber.className = "";
-  imcInfo.className = "";
+  imcNumber.innerText = "";
+  imcInfo.innerText = "";
 }
 
+//^função 4
+
 function showOrHideResults() {
-  calcContainer.classList.toggle("hide");
   resultContainer.classList.toggle("hide");
 }
 
-// Init
 createTable(data);
 
-// Eventos
+//^ Ultima função 
+
+// Eventos - Valores
 [heightInput, weightInput].forEach((el) => {
   el.addEventListener("input", (e) => {
-    const updatedValue = validDigits(e.target.value);
-
-
-
-
-    e.target.value = updatedValue;
+      const updatedValue = validDigits(e.target.value);
+      e.target.value = updatedValue;
   });
 });
 
+// Botão de Calcular
 calcBtn.addEventListener("click", (e) => {
   e.preventDefault();
 
+  const weight = parseFloat(weightInput.value.replace(",", "."));
+  const heightInCm = parseFloat(heightInput.value.replace(",", "."));
 
-  var weight = +weightInput.value.replace(",", ".");
-  var height = +heightInput.value.replace(",", ".");
+  if (isNaN(weight) || isNaN(heightInCm) || heightInCm <= 0) {
+      alert("Por favor, insira valores válidos para peso e altura.");
+      return;
+  }
 
-  console.log(weight, height);
+  //Converter a altura em Metros para Cm/100
+  const heightInM = heightInCm / 100;
 
-  if (!weight || !height){ return;}
+  // Calculo do IMC
+  //+ retorno
+  const imc = calcImc(heightInM, weight);
 
-  var imc = calcImc(height, weight);
   let info;
-
   data.forEach((item) => {
-    if (imc >= item.min && imc <= item.max) {
-
-      info = item.info;
-    }
+      if (imc >= item.min && imc <= item.max) {
+          info = item.info;
+      }
   });
 
   if (!info) return;
 
-  imcNumber.innerText = imc;
+  imcNumber.innerText = imc.toFixed(2).replace(".", ",");
   imcInfo.innerText = info;
-
-  switch (info) {
-    case "Magreza":
-      imcNumber.classList.add("low");
-      imcInfo.classList.add("low");
-      break;
-    case "Normal":
-      imcNumber.classList.add("good");
-      imcInfo.classList.add("good");
-      break;
-    case "Sobrepeso":
-      imcNumber.classList.add("high");
-      imcInfo.classList.add("high");
-      break;
-    case "Obesidade":
-      imcNumber.classList.add("high");
-      imcInfo.classList.add("high");
-      break;
-    case "Obesidade grave":
-      imcNumber.classList.add("high");
-      imcInfo.classList.add("high");
-      break;
-  }
-calcImc();
+  showOrHideResults();
 });
 
+//Botões
 clearBtn.addEventListener("click", (e) => {
   e.preventDefault();
-
   cleanInputs();
 });
 
